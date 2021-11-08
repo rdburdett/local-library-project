@@ -1,6 +1,3 @@
-// const books = require('../data/books.js')
-
-
 function getTotalBooksCount(books) {
   return books.length
 }
@@ -86,14 +83,11 @@ function getMostPopularBooks(books) {
   return mappedBooksArray.slice(0,5)
 }
 
-function getMostPopularAuthors(books, authors) {
+// Helper function for getMostPopularAuthors function
+function sortBooksHelper(books, authors) {
   let outputArray = []
   let outputObject = {}
-  let collectorArray = []
-  let collectTotal = 0
-  let finalArray = []
-  let sortedBooks =  books.sort((bookA, bookB) => bookA.authorId > bookB.authorId ? -1 : 1)
-  // console.log(sortedBooks)
+  let sortedBooks = books.sort((bookA, bookB) => bookA.authorId > bookB.authorId ? -1 : 1);
   sortedBooks.forEach((book) => {
     let thisAuthorId = book.authorId
     let currentAuthor = authors.find((author) => author.id === thisAuthorId)
@@ -101,54 +95,51 @@ function getMostPopularAuthors(books, authors) {
     outputObject = {
       name: authorName,
       total: book.borrows.length
-    }
+    };
     outputArray.push(outputObject)
-  });
-  // console.log(outputArray)
-  for (let i = 0; i < outputArray.length; i++) {
-    const thisElement = outputArray[i]
-    if ((i === outputArray.length-1) && (outputArray[i].name !== outputArray[i-1].name)) {
+  })
+  return outputArray
+}
+
+function getMostPopularAuthors(books, authors) {
+  let collectorArray = []
+  let collectTotal = 0
+  let finalArray = []
+  let sortedBooksArray = sortBooksHelper(books, authors)
+  for (let i = 0; i < sortedBooksArray.length; i++) {
+    const thisElement = sortedBooksArray[i]
+    if ((i === sortedBooksArray.length-1) && (sortedBooksArray[i].name !== sortedBooksArray[i-1].name)) {
       finalArray.push({
         name:thisElement.name, 
         count: thisElement.total
       })
-      // console.log(finalArray)
-    } else if ((i === outputArray.length-1) && (outputArray[i].name === outputArray[i-1].name)) {
-      // push to collector
+    } else if ((i === sortedBooksArray.length-1) && (sortedBooksArray[i].name === sortedBooksArray[i-1].name)) {
       collectorArray.push(thisElement)
       collectTotal += thisElement.total
-      // push to final
       finalArray.push({
         name:collectorArray[0].name, 
         count: collectTotal,
       })
-      // clear collectors
       collectTotal = 0
       collectorArray = []
-    } else if ((outputArray[i].name) === (outputArray[i+1].name)) {
-      // push to collector array
+    } else if ((sortedBooksArray[i].name) === (sortedBooksArray[i+1].name)) {
       collectorArray.push(thisElement)
       collectTotal += thisElement.total
-      // console.log(collectorArray)
     } else {
-      // push to collector
       collectorArray.push(thisElement)
       collectTotal += thisElement.total
-      // push to final
       finalArray.push({
         name:collectorArray[0].name, 
         count: collectTotal,
       })
-      // clear collectors
       collectTotal = 0
       collectorArray = []
     }
-    // sort array by total
     finalArray.sort((itemA, itemB) => itemA.count > itemB.count ? -1 : 1)
   }
-  console.log(finalArray.slice(0,5))
   return finalArray.slice(0,5)
 }
+
 module.exports = {
   getTotalBooksCount,
   getTotalAccountsCount,
