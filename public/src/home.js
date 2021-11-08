@@ -35,22 +35,19 @@ function mapGenresToArrays (books) {
   }
   return outputArray
 }
+
+// Helper function for getMostCommonGenres
 function populateArrayFromObject (object) {
   let outputArray = []
   let namesArray = Object.keys(object)
-  // console.log(namesArray)
   let countArray = Object.values(object)
-  // console.log(countArray)
-  //////
   for (let i = 0; i < namesArray.length; i++) {
     outputArray.push({
       name: namesArray[i],
       count: countArray[i]
     })
   }
-  //////
   outputArray.sort((itemA, itemB) => itemA.count > itemB.count ? -1 : 1)
-  // console.log(outputArray.slice(0,5))
   return outputArray.slice(0,5)
 }
 
@@ -63,14 +60,12 @@ function getMostCommonGenres(books) {
     }
   return acc;
   }, {})
-  // console.log(countObject)
   return populateArrayFromObject(countObject)
 
 }
 
 function getMostPopularBooks(books) {
   let sortedBooks = []
-  //////
   sortedBooks = books.sort((bookA, bookB) => bookA.borrows.length > bookB.borrows.length? -1 : 1)
   let mappedBooksArray = sortedBooks.map((inBook) => {
     let outBook = {}
