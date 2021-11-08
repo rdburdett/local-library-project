@@ -61,7 +61,6 @@ function getMostCommonGenres(books) {
   return acc;
   }, {})
   return populateArrayFromObject(countObject)
-
 }
 
 function getMostPopularBooks(books) {
